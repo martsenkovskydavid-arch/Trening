@@ -48,7 +48,7 @@ npm run db:seed
 npm run dev
 ```
 
-9. Открыть в браузере http://localhost:3000.
+9. Открыть в браузере: http://localhost:3000
 
 ## Структура
 - `src/app` — страницы, API-маршруты и глобальные стили.
