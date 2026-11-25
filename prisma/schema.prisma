@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Exercise {
+  id          Int      @id @default(autoincrement())
+  name        String
+  muscleGroup String
+  description String?
+  createdAt   DateTime @default(now())
+  sets        WorkoutSet[]
+}
+
+model Workout {
+  id          Int          @id @default(autoincrement())
+  title       String
+  notes       String?
+  date        DateTime     @default(now())
+  duration    Int          @default(60)
+  completed   Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  sets        WorkoutSet[]
+}
+
+model WorkoutSet {
+  id         Int      @id @default(autoincrement())
+  workoutId  Int
+  exerciseId Int
+  sets       Int      @default(3)
+  reps       Int      @default(10)
+  weight     Float    @default(0)
+  workout    Workout  @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+}
+
+model TrainingPlan {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  daysPerWeek Int      @default(3)
+  createdAt   DateTime @default(now())
+}
