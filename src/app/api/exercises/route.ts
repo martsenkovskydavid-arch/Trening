@@ -1,0 +1,4 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+export async function GET(){return NextResponse.json(await prisma.exercise.findMany());}
+export async function POST(req:Request){try{const b=await req.json();if(!b.name||!b.muscleGroup)return NextResponse.json({error:"Заполните поля"}, {status:400});const x=await prisma.exercise.create({data:{name:String(b.name).trim(),muscleGroup:String(b.muscleGroup),description:b.description?String(b.description):null}});return NextResponse.json(x,{status:201});}catch{return NextResponse.json({error:"Ошибка"}, {status:400});}}

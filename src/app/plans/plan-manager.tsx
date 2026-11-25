@@ -1,0 +1,10 @@
+ "use client";
+import { useState } from "react";
+type P={id:number;title:string;description:string|null;daysPerWeek:number};
+export default function PlanManager({initial}:{initial:P[]}) {
+ const [items,setItems]=useState(initial);const [title,setTitle]=useState("");const [desc,setDesc]=useState("");const [days,setDays]=useState("3");
+ async function add(e:React.FormEvent){e.preventDefault();const r=await fetch("/api/plans",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({title,description:desc,daysPerWeek:Number(days)})});if(r.ok){const x=await r.json();setItems([x,...items]);setTitle("");setDesc("");}}
+ async function del(id:number){if(!confirm("Удалить план?"))return;const r=await fetch(`/api/plans/${id}`,{method:"DELETE"});if(r.ok)setItems(items.filter(x=>x.id!==id));}
+ return <div className="content-grid"><div className="card"><h2 className="section-title">Мои программы</h2>{items.length===0?<div className="empty">Планов пока нет</div>:items.map(p=><div key={p.id} style={{padding:"15px 0",borderTop:"1px solid #2a3140",display:"flex",justifyContent:"space-between",gap:10}}><div><b>{p.title}</b><div className="muted" style={{fontSize:12,marginTop:5}}>{p.daysPerWeek} дней в неделю · {p.description}</div></div><button className="small-btn" onClick={()=>del(p.id)}>Удалить</button></div>)}</div>
+ <div className="card"><h2 className="section-title">Создать план</h2><form onSubmit={add}><div className="field"><label>Название программы</label><input required value={title} onChange={e=>setTitle(e.target.value)} placeholder="Например, Full Body"/></div><div className="field"><label>Дней в неделю</label><select value={days} onChange={e=>setDays(e.target.value)}>{[1,2,3,4,5,6,7].map(n=><option key={n} value={n}>{n}</option>)}</select></div><div className="field"><label>Описание</label><textarea value={desc} onChange={e=>setDesc(e.target.value)}/></div><button className="btn">Сохранить план</button></form></div></div>;
+}

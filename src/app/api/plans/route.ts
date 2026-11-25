@@ -1,0 +1,4 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+export async function GET(){return NextResponse.json(await prisma.trainingPlan.findMany());}
+export async function POST(req:Request){try{const b=await req.json();if(!b.title)return NextResponse.json({error:"Название обязательно"},{status:400});const x=await prisma.trainingPlan.create({data:{title:String(b.title).trim(),description:b.description?String(b.description):null,daysPerWeek:Math.max(1,Math.min(7,Number(b.daysPerWeek)||3))}});return NextResponse.json(x,{status:201});}catch{return NextResponse.json({error:"Ошибка"},{status:400});}}

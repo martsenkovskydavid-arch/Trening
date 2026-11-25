@@ -1,0 +1,4 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+export async function GET(){return NextResponse.json(await prisma.workout.findMany({orderBy:{date:"desc"}}));}
+export async function POST(req:Request){try{const b=await req.json();if(!b.title||String(b.title).trim().length<2)return NextResponse.json({error:"Название обязательно"}, {status:400});const item=await prisma.workout.create({data:{title:String(b.title).trim(),date:b.date?new Date(b.date):new Date(),duration:Math.max(1,Math.min(600,Number(b.duration)||60)),notes:b.notes?String(b.notes):null}});return NextResponse.json(item,{status:201});}catch{return NextResponse.json({error:"Некорректные данные"},{status:400});}}
